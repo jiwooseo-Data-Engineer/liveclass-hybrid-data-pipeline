@@ -4,9 +4,9 @@
 실시간,배치성 파이프라인을 만들기로 결정하였습니다.
 데이터는 회사에 중요한 자본이자 명확한 근거로 회사의 성장과 매출에 직결됩니다.
 
-# 첫번째 : 1월 1일부터 현재일까지의 강의별 누적 매출 (MTD ~ YTD 체계), 
+첫 번째 이벤트 유형 : 1월 1일부터 현재일까지 강의별 출처 (MTD ~ YTD),
 
-# 두번째: 유저들이 "언제" 강의를 가장 많이 들었고 "언제" 유입이 가장 많이 되었는가?
+두번째 이벤트 유형: 사용자들이 "언제" 강의를 가장 많이 듣고 "언제"가 가장 많이 읽는가?
 
 ## 전체 아키텍쳐의 흐름
 
@@ -22,30 +22,8 @@
 - Container : Docker / Docker Compose
 
 📝 프로젝트 아키텍쳐
-![alt text](Project_Architecture.png)
 
-📂 프로젝트 파일 구조 및 역할
-UserLogClipper/
-├── models/                     # [DW 사상 선언] dbt 아키텍처 스타일의 가상 스키마 설계
-│   ├── staging/                # (1단계) JSON 필드 분리 및 타입 정형화 명세
-│   │   ├── stg_course_sales.sql
-│   │   └── schema.yml
-│   └── marts/                   # (2단계) 최종 비즈니스 인사이트(MTD) 연산 명세
-│       ├── mart_daily_course_sales_mtd.sql
-│       └── marts.yml
-├── 01_task_course_analytics_MTD.py # [가공 엔진] Pandas 기반 시계열 누적 매출 계산 (매출 데이터 전담)
-├── extract_db.py               # [수집기 - 배치] 어제 데이터 증분 수집 (정산 데이터 전담)
-├── load_to_cloud.py            # [적재기 - 배치] Pandas 가공 마트를 BigQuery에 정형화 적재
-├── dag_scheduler.py            # [사령탑] 새벽 3시 ETL 파이프라인 전체 지휘 (Airflow)
-├── analysis_queries.sql        # [비즈니스 활용서] 현업이 쓰는 가이드 SQL (누적 매출 & 시청 피크 타임)
-├── create_tables.sql           # [스키마 증명서] 요구사항인 JSON 필드 분리 적재 DDL
-├── docker-compose.yml          # [인프라IaC] 명령어 한 줄로 Kafka/Superset 인프라 구축
-├── kafka_producer.py           # [Ingestion - Streaming] 유저 결제 시 Kafka 실시간 발행
-├── kafka_consumer.py           # [T/L - Streaming] Kafka 로그 실시간 수집 및 BigQuery 스트리밍 적재
-├── generator.py                # [Mock Data] 35만 건의 원천 데이터 생성기 (파이프라인 시작점)
-├── mock_course_sales.csv       # [원천 - 배치] 날것의 결제 트랜잭션 데이터
-├── mock_user_connections.csv   # [원천 - 스트리밍] 대용량 유저 접속 행동 로그 데이터
-└── README.md                   # [얼굴] 본 프로젝트 기술서 (SLA 및 데이터 구조 증명)
+![alt text](Project_Architecture.png)
 
 ## 📊 3. 데이터 저장소 스키마 및 구조 설계 (DW Schema Design)
 
