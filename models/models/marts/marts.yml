@@ -1,0 +1,19 @@
+# models/marts/marts.yml
+version: 2
+
+models:
+  - name: mart_daily_course_sales_mtd
+    description: "강의 동영상별 일별 매출 및 월 누적(MTD) 지표가 필드별로 분리된 최종 분석 마트"
+    columns:
+      - name: sale_date
+        description: "결제 일자 (BigQuery Partition Key)"
+        data_type: DATE
+      - name: course_id
+        description: "강의 동영상 고유 ID"
+        data_type: STRING
+      - name: daily_revenue
+        description: "해당 날짜에 발생한 총 매출액"
+        data_type: NUMERIC
+      - name: mtd_cumulative_revenue
+        description: "해당 월 1일부터 당일까지의 누적 매출액 (Month-to-Date)"
+        data_type: NUMERIC

@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+
+  # 1. Kafka 브로커들의 상태 및 클러스터 메타데이터를 관리하는 Zookeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: ucl_zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: always
+  # 2. 실시간 유저 로그 및 결제 이벤트를 유실 없이 받아줄 핵심 메시지 브로커
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: ucl_kafka
+    ports:
+      - "9092:9092" # 로컬 호스트(내 컴퓨터)에서 파이썬 프로듀서/컨슈머가 접속할 포트
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 # 내부 네트워크를 통해 주키퍼와 통신
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    restart: always
+    depends_on:
+      - zookeeper # 주키퍼가 먼저 완벽히 부팅된 후 카프카가 켜지도록 강제
+
+  # 3. 데이터 웨어하우스(BigQuery)에 적재된 마트를 현업 시각화 대시보드로 서빙하는 Superset
+  superset:
+    image: apache/superset:latest
+    container_name: ucl_superset
+    ports:
+      - "8088:8088" # 브라우저(http://localhost:8088) 접속용 포트
+    environment:
+      - SUPERSET_SECRET_KEY=your_cool_secret_key_here_12345
+      - TALISMAN_CONFIG={"force_https":false} # 로컬 HTTP 테스트를 위한 보안 완화
+    volumes:
+      - superset_home:/app/superset_home # 컨테이너가 꺼져도 내가 그린 대시보드 설정 보존
+    restart: always
+    depends_on:
+      - superset-db # 백엔드 메타데이터 DB가 먼저 켜진 후 Superset 가동
+
+  # 4. Superset의 유저 정보, 권한, 차트 설정 메타데이터를 안정적으로 격리 저장할 백엔드 DB
+  superset-db:
+    image: postgres:15
+    container_name: ucl_superset_db
+    environment:
+      - POSTGRES_USER=superset
+      - POSTGRES_PASSWORD=superset
+      - POSTGRES_DB=superset
+    volumes:
+      - db_home:/var/lib/postgresql/data # 차트 설정 데이터 영속성 확보
+    restart: always
+
+# [DATA PERSISTENCE DEFINITION] - 볼륨 저장소 정의
+volumes:
+  superset_home:
+  db_home:

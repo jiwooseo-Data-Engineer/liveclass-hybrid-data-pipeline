@@ -1,0 +1,26 @@
+# models/staging/schema.yml
+version: 2
+
+sources:
+  - name: liveclass_raw
+    description: "플랫폼에서 수집된 원천 데이터 레이어"
+    tables:
+      - name: mock_course_sales
+
+models:
+  - name: stg_course_sales
+    description: "결제 로그에서 필드를 분리하고 데이터 타입을 정형화한 스테이징 모델"
+    columns:
+      - name: order_id
+        description: "결제 고유 주문 ID"
+        tests:
+          - unique    # 중복이 없는지 검증
+          - not_null  # 빈 값이 없는지 검증
+      - name: course_id
+        description: "강의 동영상 고유 ID"
+        tests:
+          - not_null
+      - name: price
+        description: "숫자 타입으로 분리된 강의 결제 금액"
+        tests:
+          - not_null
