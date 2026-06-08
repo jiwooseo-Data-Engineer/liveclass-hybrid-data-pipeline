@@ -1,4 +1,3 @@
-# 파이썬 카프카 라이브러리 설치 필요: pip install kafka-python
 from kafka import KafkaProducer
 import json
 import time

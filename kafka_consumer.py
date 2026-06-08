@@ -1,7 +1,7 @@
 from kafka import KafkaConsumer
 import json
 
-print("📥 [Kafka Consumer] 24시간 실시간 로그 수집 세션을 시작합니다...")
+print("Kafka Consumer 실시간 로그 수집 세션")
 
 consumer = KafkaConsumer(
     'liveclass-sales',
