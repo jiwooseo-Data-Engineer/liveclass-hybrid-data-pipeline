@@ -1,14 +1,12 @@
 import os
 from google.cloud import bigquery
-from google.oauth2 import service_account
-
+import google.auth
 
 def upload_marts_to_bigquery():
     print("UserLogClipper 최종 마트 파일의 BigQuery 적재를 시작합니다...")
 
-    # 1. 빅쿼리 접속 설정 (실무에서는 GCP 프로젝트 정보와 서비스 계정 키 파일이 필요합니다)
-    # 과제 프로토타입 단계에서는 구조만 완성해 두셔도 훌륭합니다.
-    PROJECT_ID = 'your-gcp-project-id'
+    # 1. 🎯 프로젝트 ID 설정을 지우님의 진짜 프로젝트 ID인 'mtd-pipeline'으로 교체했습니다.
+    PROJECT_ID = 'mtd-pipeline'
     DATASET_ID = 'liveclass_marts'
 
     # 적재할 로컬 파일과 빅쿼리 테이블 매핑 (파일명 : 테이블명)
@@ -18,8 +16,15 @@ def upload_marts_to_bigquery():
     }
 
     try:
-        # 2. 빅쿼리 클라이언트 초기화
-        client = bigquery.Client(project=PROJECT_ID)
+        # 2. 🔥 [무적의 인증 치트키] 브라우저 로그인을 강제로 유도하는 인증 방식입니다.
+        # 이 방식을 쓰면 지러 지우님의 로컬 PC 브라우저 권한을 코드가 그대로 훔쳐다 씁니다!
+        print("구글 계정 웹 브라우저 인증을 시작합니다...")
+        credentials, project = google.auth.default(
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
+        
+        # 브라우저 권한(credentials)을 장착해서 클라이언트를 초기화합니다.
+        client = bigquery.Client(project=PROJECT_ID, credentials=credentials)
 
         # 3. 빅쿼리 적재 옵션 설정 (CSV 파일을 테이블로 밀어 넣기 위한 설정)
         job_config = bigquery.LoadJobConfig(
@@ -31,11 +36,12 @@ def upload_marts_to_bigquery():
 
         for local_file, table_name in files_to_load.items():
             if not os.path.exists(local_file):
-                print(f" 적재할 로컬 파일이 없습니다: {local_file}")
+                print(f" ⚠️ 적재할 로컬 파일이 없습니다: {local_file}")
+                print(f"    현재 폴더에 해당 CSV 파일이 진짜 존재하는지 확인해 주세요!")
                 continue
 
             table_ref = f"{PROJECT_ID}.{DATASET_ID}.{table_name}"
-            print(f" 빅쿼리 적재 : {local_file} {table_ref}")
+            print(f" 🔄 빅쿼리 적재 중... : {local_file} ➡️ {table_ref}")
 
             # 파일 오픈 후 빅쿼리로 스트리밍 로드
             with open(local_file, "rb") as source_file:
@@ -44,12 +50,12 @@ def upload_marts_to_bigquery():
                 )
 
             load_job.result()  # 적재 작업이 끝날 때까지 대기
-            print(f" 빅쿼리 적재 완료: {table_name} 테이블 생성됨")
+            print(f" ✅ 빅쿼리 적재 완료: {table_name} 테이블 생성됨")
 
-        print("마트 데이터가 BigQuery에 성공적으로 적재되었습니다.")
+        print("🎉 마트 데이터가 BigQuery에 성공적으로 적재되었습니다! 🎉")
 
     except Exception as e:
-        print(f" 에러 발생: {str(e)}")
+        print(f" ❌ 에러 발생: {str(e)}")
 
 
 if __name__ == "__main__":
