@@ -90,7 +90,9 @@ Batch (Pandas & BigQuery): 수집된 어제 데이터를 바탕으로 취소 건
 ## 📊 1. 강의별 전체 매출 분석 (일배치 및 전체매출 추이)
 강의별 전체 매출분석을 일자별,2026년 1월1일~2026년 6월9일까지 매출기준으로 집계하였습니다.(일일,전체 매출)
 ![alt text](./images/Total_sales_by_course.png)
-![alt text](./images/Daily_total_sales by_lecture.png)
+(전체매출)
+![alt text](./images/Daily_total_sales_by_lecture.png)
+(일자별매출)
 
 
 ## 📊 2. 유저 시간대별 접속 로그 분석 (인프라 및 마케팅 인사이트)
