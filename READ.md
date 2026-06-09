@@ -46,6 +46,7 @@ Python 3.10+ 및 가상환경 (`.venv`)
 #### 2) 인프라 컨테이너 구동 (Kafka, Zookeeper, Superset)
 
 📝 스키마 설명
+
 일별 강의 매출 및 월 누적 매출 마트 (mart_daily_course_sales_mtd)
 ![alt text](./images/mart_daily_course_sales_mtd_Schema.png)
 
