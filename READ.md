@@ -47,7 +47,7 @@ Python 3.10+ 및 가상환경 (`.venv`)
 
 📝 스키마 설명
 
-일별 강의 매출 및 월 누적 매출 마트 (mart_daily_course_sales_mtd)
+일별 강의 매출 및 월 누적 매출 스키마 (mart_daily_course_sales_mtd)
 ![alt text](./images/mart_daily_course_sales_mtd_Schema.png)
 
 sale_date (매출 집계 일자)
@@ -67,6 +67,7 @@ mtd_cumulative_revenue를 미리 계산하여 저장한 이유:
 sale_date와 course_id를 독립시킨 이유:
 빅쿼리 같은 컬럼 지향(Columnar) 데이터베이스에서 가장 중요한 것은 쿼리 범위를 제한하는 것입니다. sale_date를 기준으로 파티셔닝을 수행하면 특정 날짜 범위만 골라 읽을 수 있어 비용을 아낄수 있습니다. 또한, course_id를 명확히 분리해 둠으로써 BI 툴에서 별도의 복잡한 문자열 파싱 없이 즉시 Group By를 걸어 강의별 누적 성장 곡선을 보여줄수 있도록 설계했습니다.
 
+시간대별 유저 접속 스키마 (user_connection_hourly_marts)
 ![alt text](./images/user_connection_hourly_marts_Schema.png)
 visit_time (정확한 접속 일시)
 유저가 정확히 몇 년, 몇 월, 몇 일, 몇 시, 몇 분, 몇 초에 들어왔는지 기록하는 원본 데이터입니다.
