@@ -91,6 +91,7 @@ Batch (Pandas & BigQuery): 수집된 어제 데이터를 바탕으로 취소 건
 강의별 전체 매출분석을 일자별,2026년 1월1일~2026년 6월9일까지 매출기준으로 집계하였습니다.(일일,전체 매출)
 ![alt text](./images/Total_sales_by_course.png)
 (전체매출)
+
 ![alt text](./images/Daily_total_sales_by_lecture.png)
 (일자별매출)
 
